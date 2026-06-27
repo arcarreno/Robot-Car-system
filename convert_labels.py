@@ -1,18 +1,6 @@
 r"""
 Convierte labels exportados de Roboflow a formato YOLO estandar.
 
-Roboflow exporta en formato YOLO, pero a veces las imagenes
-vienen en subcarpetas. Este script unifica todo.
-
-Uso:
-  1. Exporta el dataset de Roboflow en formato YOLO
-  2. Extrae el zip en una carpeta
-  3. Ejecuta: python convert_labels.py <carpeta_roboflow>
-
-Ejemplo:
-  python convert_labels.py "C:\Users\aranc\Downloads\semaforo-dataset-2"
-
-Nota: el prefijo r" " es para que Python no interprete \U como unicode escape.
 """
 
 import os
