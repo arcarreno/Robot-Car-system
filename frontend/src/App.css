@@ -1,0 +1,384 @@
+:root {
+  --danger: #dc2626;
+  --warning: #ca8a04;
+  --accent: #6366f1;
+  --accent-glow: rgba(99, 102, 241, 0.3);
+  --toast-bg: rgba(255, 255, 255, 0.95);
+  --toast-text: #1f2937;
+  --toast-text-muted: rgba(0, 0, 0, 0.6);
+  --toast-border: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(168, 85, 247, 0.15);
+  --border-color: rgba(168, 85, 247, 0.2);
+  --card-bg: #111111;
+  --btn-go: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.25));
+  --btn-stop: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.25));
+  --btn-dir: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.2));
+  --btn-glass-border: 1px solid rgba(168, 85, 247, 0.25);
+  --btn-glass-shadow: 0 0 16px rgba(99, 102, 241, 0.15);
+  --btn-glass-blur: blur(8px);
+  --btn-go-active: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.4));
+  --btn-stop-active: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.4));
+  --btn-dir-active: linear-gradient(135deg, rgba(99, 102, 241, 0.45), rgba(168, 85, 247, 0.35));
+  --speed-btn-bg: rgba(99, 102, 241, 0.1);
+  --speed-btn-border: rgba(168, 85, 247, 0.2);
+  --speed-btn-active-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.15));
+  --light-on-bg: rgba(168, 85, 247, 0.3);
+  --light-on-color: #c4b5fd;
+  --light-off-bg: rgba(255, 255, 255, 0.1);
+  --light-off-color: #9ca3af;
+  --toast-bg: rgba(255, 255, 255, 0.95);
+  --toast-text: #1f2937;
+  --toast-text-muted: rgba(0, 0, 0, 0.6);
+  --toast-border: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --card-bg: #ffffff;
+  --btn-go: #16a34a;
+  --btn-stop: #dc2626;
+  --btn-dir: #2563eb;
+  --btn-glass-border: none;
+  --btn-glass-shadow: none;
+  --btn-glass-blur: none;
+  --btn-go-active: #15803d;
+  --btn-stop-active: #b91c1c;
+  --btn-dir-active: #1d4ed8;
+  --speed-btn-bg: var(--bg-primary);
+  --speed-btn-border: var(--glass-border);
+  --speed-btn-active-bg: rgba(37, 99, 235, 0.1);
+  --light-on-bg: #fef3c7;
+  --light-on-color: #92400e;
+  --light-off-bg: #374151;
+  --light-off-color: #f9fafb;
+  --toast-bg: rgba(30, 30, 30, 0.85);
+  --toast-text: #ffffff;
+  --toast-text-muted: rgba(255, 255, 255, 0.7);
+  --toast-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg-primary);
+  transition: background-color 0.15s ease;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.app-header h1 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.connection-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  transition: all 0.3s ease;
+}
+
+.connection-badge.online {
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+  border-color: rgba(22, 163, 74, 0.2);
+}
+
+.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.connect-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.connect-btn:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.connection-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.connection-modal {
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  color: white;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: white;
+}
+
+.modal-title {
+  margin: 0 0 1.5rem;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.steps-list {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.step.pending {
+  opacity: 0.5;
+}
+
+.step.checking {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.step.success {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.step.error {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.step-icon {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.step-label {
+  font-size: 0.9rem;
+}
+
+.step-fix {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: left;
+  width: 100%;
+}
+
+.step-fix strong {
+  color: #f59e0b;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.step-fix code {
+  color: #e5e7eb;
+  font-family: 'Consolas', 'Monaco', monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1rem;
+  }
+
+  .connection-badge {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .connect-btn {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* U13 fix: clase compartida para el placeholder de "sin video" en los 3
+   componentes (ControlManual, RutaAutonoma, RutaContinua). Antes cada uno
+   repetia los mismos inline styles. */
+.video-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  color: #666;
+  font-size: 0.9rem;
+  min-height: 200px;
+}
+
+.sileo-toaster {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+[data-sileo-title] {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+[data-sileo-viewport][data-theme="dark"] [data-sileo-title] {
+  color: #1f2937 !important;
+}
+
+[data-sileo-viewport][data-theme="dark"] [data-sileo-title][data-state="success"] {
+  color: #16a34a !important;
+}
+
+[data-sileo-viewport][data-theme="dark"] [data-sileo-title][data-state="error"] {
+  color: #dc2626 !important;
+}
+
+[data-sileo-viewport][data-theme="dark"] [data-sileo-title][data-state="info"] {
+  color: #6366f1 !important;
+}
+
+[data-sileo-viewport][data-theme="dark"] [data-sileo-description] {
+  color: #6b7280 !important;
+}
+
+[data-sileo-viewport][data-theme="light"] [data-sileo-title] {
+  color: #f9fafb !important;
+}
+
+[data-sileo-viewport][data-theme="light"] [data-sileo-title][data-state="success"] {
+  color: #4ade80 !important;
+}
+
+[data-sileo-viewport][data-theme="light"] [data-sileo-title][data-state="error"] {
+  color: #f87171 !important;
+}
+
+[data-sileo-viewport][data-theme="light"] [data-sileo-title][data-state="info"] {
+  color: #a5b4fc !important;
+}
+
+[data-sileo-viewport][data-theme="light"] [data-sileo-description] {
+  color: #9ca3af !important;
+}
+
+[data-sileo-description] {
+  font-size: 12px;
+}

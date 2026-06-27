@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+env.cfg
+pip-log.txt
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+frontend/dist/
+frontend/.parcel-cache/
+Semaforo/UI/SEMAFORO/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+coverage/
+.coverage
+htmlcov/
+
+# Virtual environments
+ENV/
+env/
+.venv/
+
+# YOLO training runs (grandes, generados)
+runs/
+
+# Calibration temp files
+raw_*.json
+
+# YOLO cache files
+*.cache
+
+.ai

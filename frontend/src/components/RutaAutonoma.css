@@ -1,0 +1,328 @@
+.ruta-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  height: 100%;
+}
+
+.ruta-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-secondary);
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ruta-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ruta-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: -1rem 0 0;
+}
+
+.ruta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ruta-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ruta-value {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.ruta-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid var(--glass-border);
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ruta-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.ruta-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+
+.ruta-slider:hover,
+.ruta-slider:focus,
+.ruta-slider:active {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+}
+
+.ruta-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  padding: 0 0.125rem;
+}
+
+.ruta-hint {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.speed-modes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.speed-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 1rem 0.75rem;
+  border: 1px solid var(--speed-btn-border);
+  border-radius: 0.75rem;
+  background: var(--speed-btn-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.speed-btn:hover:not(:disabled) {
+  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.speed-btn.active {
+  border-color: rgba(99, 102, 241, 0.4);
+  background: var(--speed-btn-active-bg);
+  color: var(--text-primary);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.15);
+}
+
+.speed-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.speed-icon {
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.speed-label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+}
+
+.start-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+}
+
+.start-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.start-btn.running {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  cursor: not-allowed;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.start-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.route-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.route-buttons > * {
+  flex: 1;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.route-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  border-radius: 9999px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-message {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.progress-percent {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .ruta-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .ruta-card {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+
+  .speed-btn {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+.route-video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.route-video-modal {
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000;
+}
+
+.route-video-label {
+  display: block;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.route-video-feed {
+  width: 100%;
+  display: block;
+  transform: rotate(180deg) scaleX(-1);
+}
+
+.abort-btn-stream {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.abort-btn-stream:hover {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.abort-btn-stream:active {
+  background: #b91c1c;
+}

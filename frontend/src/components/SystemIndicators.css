@@ -1,0 +1,49 @@
+.system-indicators {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+
+.indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #555;
+  display: inline-block;
+}
+
+.indicator.online .indicator-dot,
+.indicator.backend.online .indicator-dot,
+.indicator.esp32.online .indicator-dot,
+/* U4 fix: el dot del KB ahora sigue la misma convencion que los demas.
+   Antes el color estaba hardcodeado como inline style en el JSX. */
+.indicator.kb.on .indicator-dot {
+  background: var(--accent);
+  box-shadow: 0 0 4px var(--accent);
+}
+
+/* Keyboard mode */
+.indicator.kb.on .kb-text {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.indicator.kb .kb-text {
+  color: var(--text-secondary);
+}
+
+/* U5 fix: el bloque .keyboard-btn se movio a KeyboardToggle.css (donde
+   vive KeyboardToggle.jsx). Asi el nombre del archivo CSS refleja su
+   contenido y la dependencia es obvia. */

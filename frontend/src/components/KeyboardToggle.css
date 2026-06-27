@@ -1,0 +1,32 @@
+/* U5 fix: este bloque vivia en SystemIndicators.css. Movido aca para que
+   el nombre del archivo CSS refleje el componente al que pertenece. */
+
+/* Keyboard toggle button */
+.keyboard-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.keyboard-btn:hover {
+  border-color: var(--accent);
+}
+
+.keyboard-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.keyboard-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

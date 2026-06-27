@@ -1,0 +1,13 @@
+# YOLO Dataset Configuration - Semaforo Digital
+# Labels convertidos de polígono a bounding box
+
+path: C:/Users/aranc/Documents/9NO/HaciendoCiencia/robot-car-system/yolo_dataset
+train: images/train
+val: images/val
+
+# Classes
+nc: 3
+names:
+  0: semaforo
+  1: arrow_right
+  2: arrow_left
