@@ -1,20 +1,6 @@
 """
 Convierte labels de polígono (segmentación) a bounding box (detección).
 
-Formatos soportados:
-  - Poligono:    class_id x1 y1 x2 y2 x3 y3 ... xn yn
-  - Bounding box (YOLO): class_id x_center y_center width height (5 valores)
-
-Formatos que se transforman a bbox:
-  - Polygon: min/max de vertices
-  - Otros >5 valores: asumidos poligono
-
-Uso:
-  python polygon_to_bbox.py --input <carpeta_labels> [--output <carpeta_salida>]
-  python polygon_to_bbox.py --input train/labels/         # in-place si no se da --output
-  python polygon_to_bbox.py --input labels/ --output labels_bbox/
-
-Si no se pasa --input, usa ./train/labels
 """
 
 import os
