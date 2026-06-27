@@ -286,11 +286,10 @@ Para calibrar:
 - Probar `python test_yolo.py --image <ruta>` con una imagen conocida
 - Si `YOLO_ENABLED=False` en `config.py`, solo se usa HSV (fallback)
 
-## Autor
+## Autores
 
 Angel Armando Carreño Gonzalez
 angel.carreno@alumno.buap.mx
 
-## Licencia
-
-MIT
+Ricardo Alvarez González  
+ricardo.alvarez @correo.buap.mx
