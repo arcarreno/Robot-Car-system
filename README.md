@@ -109,6 +109,8 @@ El frontend estará disponible en `http://localhost:5173`.
 2. Abrir el navegador en `http://localhost:5173`
 3. Click en "Conectar" y verificar que el estado muestre "Conectado"
 
+> **Nota**: Si el robot ya tiene el firmware flasheado, no es necesario usar Arduino IDE. Solo instalar dependencias y ejecutar. El flasheo del firmware es una sola vez por robot. Ver `FIRMWARE_FIXES.md` solo si se necesita re-flashear.
+
 ## Características
 
 - **Control Manual**: Botones (mouse) o teclado (WASD/flechas/Space) para mover el robot
