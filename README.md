@@ -292,4 +292,4 @@ Para calibrar:
 
 Angel Armando Carreño Gonzalez angel.carreno@alumno.buap.mx
 
-Ricardo Alvarez González ricardo.alvarez @correo.buap.mx
+Ricardo Alvarez González ricardo.alvarez@correo.buap.mx
