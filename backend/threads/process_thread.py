@@ -21,8 +21,9 @@ from config import (
     DEPTH_BILATERAL_D, DEPTH_BILATERAL_SIGMA_COLOR, DEPTH_BILATERAL_SIGMA_SPACE,
     MIDAS_CALIBRATION_K, MIDAS_CALIBRATION_P, MIDAS_CALIBRATION_OFFSET,
     DEPTH_ZONE_DANGER, DEPTH_ZONE_CAUTION, DEPTH_ZONE_PRE_CAUTION,
+    DEPTH_CLOSE_RAW_THRESHOLD, DEPTH_CLOSE_RATIO_THRESHOLD,
     OBSTACLE_STOP_THRESHOLD, OBSTACLE_RESUME_FACTOR, OBSTACLE_TURN_TIME,
-    OBSTACLE_SLOWDOWN_DISTANCE, OBSTACLE_SPEED_REDUCTION,
+    OBSTACLE_SLOWDOWN_DISTANCE, OBSTACLE_SPEED_REDUCTION, OBSTACLE_FREE_DISTANCE,
 )
 from core.color_detector import ColorDetector
 from core.yolo_detector import YoloDetector
@@ -136,6 +137,9 @@ class ProcessThread(threading.Thread):
                 bilateral_d=DEPTH_BILATERAL_D,
                 bilateral_sigma_color=DEPTH_BILATERAL_SIGMA_COLOR,
                 bilateral_sigma_space=DEPTH_BILATERAL_SIGMA_SPACE,
+                close_raw_threshold=DEPTH_CLOSE_RAW_THRESHOLD,
+                close_ratio_threshold=DEPTH_CLOSE_RATIO_THRESHOLD,
+                free_distance=OBSTACLE_FREE_DISTANCE,
             )
 
         # Hilo sender de comandos (daemon)

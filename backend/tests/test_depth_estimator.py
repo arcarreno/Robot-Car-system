@@ -79,6 +79,8 @@ class TestGetObstacleDistance(unittest.TestCase):
         self.estimator._compiled_model = None
         self.estimator._ema_alpha = 0.4
         self.estimator._prev_distance = None
+        self.estimator._close_raw_threshold = 450.0
+        self.estimator._close_ratio_threshold = 0.7
 
     def test_returns_distance_for_center_roi(self):
         """Retorna distancia para la region central del depth map."""
@@ -117,6 +119,8 @@ class TestGetFreeSpaceDirection(unittest.TestCase):
         self.estimator = DepthEstimator.__new__(DepthEstimator)
         self.estimator._compiled_model = None
         self.estimator._prev_direction = "right"
+        self.estimator._close_raw_threshold = 450.0
+        self.estimator._close_ratio_threshold = 0.7
 
     def test_left_has_more_space(self):
         """Si la izquierda tiene depth mas bajo → retorna 'left'."""
@@ -147,6 +151,61 @@ class TestGetFreeSpaceDirection(unittest.TestCase):
         depth_map = np.full((100, 100), 180.0, dtype=np.float32)
         direction = self.estimator.get_free_space_direction(depth_map)
         self.assertIn(direction, ("left", "right"))
+
+
+class TestCloseRatio(unittest.TestCase):
+    """Tests de deteccion por close_ratio (paredes/muebles grandes)."""
+
+    def setUp(self):
+        self.estimator = DepthEstimator.__new__(DepthEstimator)
+        self.estimator._cal_k = 99997.1
+        self.estimator._cal_p = 1.94
+        self.estimator._cal_offset = 118.0
+        self.estimator._compiled_model = None
+        self.estimator._ema_alpha = 0.4
+        self.estimator._prev_distance = None
+        self.estimator._prev_direction = "right"
+        self.estimator._close_raw_threshold = 450.0
+        self.estimator._close_ratio_threshold = 0.7
+        self.estimator._zone_danger = 0.4
+        self.estimator._zone_caution = 0.8
+        self.estimator._zone_pre_caution = 1.2
+        self.estimator._min_detection_frames = 2
+        self.estimator._consecutive_detection = 0
+        self.estimator._consecutive_clear = 0
+        self.estimator._ttc = None
+        self.estimator._approach_speed = 0.0
+
+    def test_wall_filling_screen_triggers_danger(self):
+        """Pared cubriendo toda la pantalla → close_ratio alto → danger."""
+        # Depth map con valores altos uniformes (pared cercana, raw > 450)
+        depth_map = np.full((100, 100), 500.0, dtype=np.float32)
+
+        result = self.estimator.analyze(depth_map)
+
+        # close_ratio deberia ser 1.0 (100% del ROI > 450)
+        self.assertGreater(result.close_ratio, 0.7)
+        self.assertEqual(result.zone, "danger")
+
+    def test_open_space_clear_zone(self):
+        """Espacio libre (valores bajos) → close_ratio bajo → clear."""
+        # Depth map con valores bajos (espacio abierto, raw < 450)
+        depth_map = np.full((100, 100), 150.0, dtype=np.float32)
+
+        result = self.estimator.analyze(depth_map)
+
+        # close_ratio deberia ser 0.0 (0% del ROI > 450)
+        self.assertEqual(result.close_ratio, 0.0)
+        self.assertEqual(result.zone, "clear")
+
+    def test_close_ratio_in_result(self):
+        """close_ratio se incluye en ObstacleResult."""
+        depth_map = np.full((100, 100), 500.0, dtype=np.float32)
+
+        result = self.estimator.analyze(depth_map)
+
+        self.assertIsInstance(result.close_ratio, float)
+        self.assertGreater(result.close_ratio, 0.0)
 
 
 class TestDepthEstimatorEstimate(unittest.TestCase):

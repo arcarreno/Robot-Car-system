@@ -634,12 +634,32 @@ class TestObstacleAvoidance(unittest.TestCase):
         # Simular que paso el tiempo del giro (> max turn time)
         sm._obstacle_timer = time.time() - 4.0  # 4 segundos atras (> OBSTACLE_MAX_TURN_TIME)
 
-        # Evaluate: el giro ya completo por timeout
+        # Evaluate: el giro ya completo por timeout → transiciona a ADVANCE
         result = sm.evaluate(
             detected_color=None,
             obstacle_distance=None,
         )
-        self.assertFalse(sm.obstacle_active)
+        # Todavia activo durante la fase ADVANCE
+        self.assertTrue(sm.obstacle_active)
+        self.assertEqual(sm._obstacle_phase, "advance")
+
+        # ADVANCE: sin obstaculo → sigue avanzando (return "go")
+        result = sm.evaluate(
+            detected_color=None,
+            obstacle_distance=2.0,  # lejos, sin obstaculo
+        )
+        self.assertEqual(result, "go")
+        self.assertTrue(sm.obstacle_active)
+
+        # ADVANCE: detecta obstaculo cerca → transiciona a scan_180
+        result = sm.evaluate(
+            detected_color=None,
+            obstacle_distance=0.3,  # obstaculo detectado (< threshold 0.5)
+            obstacle_zone="danger",
+            obstacle_confidence=1.0,
+        )
+        self.assertEqual(result, "stop")
+        self.assertEqual(sm._obstacle_phase, "scan_180")
 
     def test_obstacle_resume_when_clear(self):
         """Cuando el obstaculo desaparece (distancia > threshold*factor), reanuda."""
@@ -703,7 +723,28 @@ class TestObstacleAvoidance(unittest.TestCase):
             obstacle_zone="clear",
             obstacle_confidence=0.0,
         )
-        self.assertFalse(sm.obstacle_active)
+        # Transiciona a ADVANCE, no a reset directo
+        self.assertTrue(sm.obstacle_active)
+        self.assertEqual(sm._obstacle_phase, "advance")
+
+        # ADVANCE: sin obstaculo → sigue avanzando
+        result = sm.evaluate(
+            detected_color=None,
+            obstacle_distance=2.0,
+            obstacle_zone="clear",
+            obstacle_confidence=0.0,
+        )
+        self.assertEqual(result, "go")
+        self.assertTrue(sm.obstacle_active)
+
+        # ADVANCE: timeout (> 10s) → escanea
+        sm._obstacle_timer = time.time() - 11.0
+        result = sm.evaluate(
+            detected_color=None,
+            obstacle_distance=2.0,
+        )
+        self.assertEqual(result, "stop")
+        self.assertEqual(sm._obstacle_phase, "scan_180")
 
     def test_obstacle_directionProperty(self):
         """obstacle_direction retorna la direccion del giro."""

@@ -559,18 +559,19 @@ class StateMachine:
         """
         Evalua obstaculo y retorna comando (stop/left/right) o None.
 
-        v5: Escaneo de ambiente (reemplaza BACKUP):
-          idle → stop → scan_180 → scan_360 → turn → resume
+        v7: Avance continuo reactivo:
+          idle → stop → scan_180 → scan_360 → turn → advance (hasta obstáculo)
 
           Cuando se detecta un obstáculo:
           1. STOP: parada inicial (1 frame)
           2. SCAN_180: escanea 180° (izq + der) en 2 segundos
-             - Si hay espacio libre (> 0.3m) → TURN
+             - Si hay espacio libre (> 0.7m) → TURN
              - Si no hay → SCAN_360
           3. SCAN_360: escanea 360° en 4 segundos
           4. TURN: gira hasta que el camino esté despejado
+          5. ADVANCE: avanza continuamente hasta detectar obstáculo → vuelve a SCAN
 
-          El robot NUNCA retrocede — solo escanea y gira.
+          El robot NUNCA retrocede — solo escanea, gira y avanza.
         """
 
         # --- Fase STOP: parada inicial (1 frame) ---
@@ -685,25 +686,81 @@ class StateMachine:
 
             # Safety: tope maximo de giro
             if elapsed >= OBSTACLE_MAX_TURN_TIME:
-                self._reset_obstacle()
-                print("[Obstacle] Giro timeout, reanudando por seguridad")
-                return "stop"
+                # Transicion a ADVANCE en vez de RESET — avanzar antes de re-evaluar
+                self._obstacle_phase = "advance"
+                self._obstacle_timer = time.time()
+                self._obstacle_phase_sent = False
+                print("[Obstacle] Giro timeout, avanzando antes de re-evaluar")
+                return "go"
 
             # Verificar si el camino esta despejado
             if (elapsed >= OBSTACLE_MIN_TURN_TIME
                     and obstacle_distance is not None
                     and obstacle_distance > self._obstacle_threshold * self._obstacle_resume_factor):
-                self._reset_obstacle()
+                # Transicion a ADVANCE en vez de RESET
+                self._obstacle_phase = "advance"
+                self._obstacle_timer = time.time()
+                self._obstacle_phase_sent = False
                 print(f"[Obstacle] Despejado ({obstacle_distance:.2f}m > "
                       f"{self._obstacle_threshold * self._obstacle_resume_factor:.2f}m), "
-                      f"reanudando")
-                return None
+                      f"avanzando")
+                return "go"
 
             # Enviar giro solo en el primer frame — ESP32 mantiene el comando
             if not self._obstacle_phase_sent:
                 self._obstacle_phase_sent = True
                 return self._obstacle_direction or "left"
             return None  # ESP32 ya esta girando
+
+        # --- Fase ADVANCE: avanzar hasta detectar obstáculo cerca ---
+        # El robot avanza continuamente y solo para cuando detecta un obstáculo.
+        # Reemplaza el ADVANCE de tiempo fijo — ahora es reactivo.
+        if self._obstacle_phase == "advance":
+            elapsed = time.time() - self._obstacle_timer
+            OBSTACLE_ADVANCE_MAX_TIME = 10.0  # safety max: 10 segundos
+
+            # Safety: tope maximo de avance
+            if elapsed >= OBSTACLE_ADVANCE_MAX_TIME:
+                self._obstacle_phase = "scan_180"
+                self._obstacle_timer = time.time()
+                self._obstacle_scan_results = []
+                self._obstacle_scan_phase_sent = False
+                print(f"[Obstacle] ADVANCE timeout ({elapsed:.1f}s), escaneando")
+                return "stop"
+
+            # Durante el avance, verificar si hay obstaculo cerca
+            is_close_ahead = (
+                obstacle_distance is not None
+                and obstacle_distance < self._obstacle_threshold
+            )
+            is_collision = (
+                obstacle_distance is not None
+                and obstacle_distance < OBSTACLE_COLLISION_DISTANCE
+            )
+
+            if is_collision:
+                # Colisión → parar y escanear
+                self._obstacle_phase = "scan_180"
+                self._obstacle_timer = time.time()
+                self._obstacle_scan_results = []
+                self._obstacle_scan_phase_sent = False
+                print(f"[Obstacle] ADVANCE: collision ({obstacle_distance:.2f}m), escaneando")
+                return "stop"
+
+            if is_close_ahead:
+                # Obstáculo detectado → escanear antes de llegar
+                self._obstacle_phase = "scan_180"
+                self._obstacle_timer = time.time()
+                self._obstacle_scan_results = []
+                self._obstacle_scan_phase_sent = False
+                print(f"[Obstacle] ADVANCE: obstáculo a {obstacle_distance:.2f}m, escaneando")
+                return "stop"
+
+            # Sin obstáculo → seguir avanzando
+            if not self._obstacle_phase_sent:
+                self._obstacle_phase_sent = True
+                print(f"[Obstacle] ADVANCE: avanzando (dist={obstacle_distance:.2f}m)")
+            return "go"
 
         # --- Fase IDLE: detectar nuevo obstáculo ---
         # Cooldown post-evitación: no re-detectar inmediatamente

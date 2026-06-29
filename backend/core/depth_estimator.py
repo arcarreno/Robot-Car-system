@@ -41,6 +41,7 @@ class ObstacleResult:
     confidence: float               # 0.0-1.0, cuantos frames consecutivos confirmaron
     ttc: Optional[float]            # time-to-collision en segundos (None = infinito)
     approach_speed: float           # m/s de aproximacion (positivo = acercándose)
+    close_ratio: float = 0.0        # 0.0-1.0, % del ROI central con raw > umbral
 
 
 class DepthEstimator:
@@ -64,6 +65,11 @@ class DepthEstimator:
         bilateral_d: int = 7,
         bilateral_sigma_color: float = 50.0,
         bilateral_sigma_space: float = 50.0,
+        # Deteccion close_ratio: para paredes/muebles grandes que llenan la pantalla
+        close_raw_threshold: float = 450.0,   # raw value umbral para considerar "cerca"
+        close_ratio_threshold: float = 0.7,   # % minimo del ROI para trigger danger
+        # Distancia minima libre para analyze_directions
+        free_distance: float = 0.7,           # metros — distancia minima para considerar "libre"
     ):
         """
         Args:
@@ -102,6 +108,13 @@ class DepthEstimator:
         self._bilateral_d = bilateral_d
         self._bilateral_sigma_color = bilateral_sigma_color
         self._bilateral_sigma_space = bilateral_sigma_space
+
+        # Close ratio detection
+        self._close_raw_threshold = close_raw_threshold
+        self._close_ratio_threshold = close_ratio_threshold
+
+        # Free distance threshold for analyze_directions
+        self._free_distance = free_distance
 
         # Estado temporal (ANTES del check de modelo para que existan siempre)
         self._prev_distance: Optional[float] = None   # EMA del frame anterior
@@ -441,8 +454,25 @@ class DepthEstimator:
         center_roi = depth_map[cy - 10 : cy + 10, cx - 10 : cx + 10]
         raw_center = float(np.mean(center_roi)) if center_roi.size > 0 else 0.0
 
+        # --- Close ratio: detectar pared/mueble grande que llena la pantalla ---
+        # Calcula que porcentaje del ROI central tiene valores raw altos ("cerca")
+        half_h = int(h * 0.4 / 2)  # 40% del frame (mismo que get_obstacle_distance)
+        half_w = int(w * 0.4 / 2)
+        roi_full = depth_map[
+            cy - half_h : cy + half_h,
+            cx - half_w : cx + half_w,
+        ]
+        close_ratio = 0.0
+        if roi_full.size > 0:
+            close_mask = roi_full > self._close_raw_threshold
+            close_ratio = float(np.sum(close_mask)) / roi_full.size
+
         # Determinar zona
-        if distance is None:
+        # PRIORIDAD: close_ratio override → distance-based zones
+        if close_ratio > self._close_ratio_threshold:
+            # Pared/mueble grande llenando la pantalla → danger directo
+            zone = "danger"
+        elif distance is None:
             zone = "clear"
         elif distance < self._zone_danger:
             zone = "danger"
@@ -472,8 +502,8 @@ class DepthEstimator:
         self._debug_count = getattr(self, '_debug_count', 0) + 1
         if self._debug_count % 30 == 0:
             dist_str = f"{distance:.2f}m" if distance else "None"
-            print(f"[DEPTH] dist={dist_str} raw_p90={p90_depth:.1f} std={roi_std:.1f} "
-                  f"ema={self._prev_distance:.2f} zone={zone} dir={direction} "
+            print(f"[DEPTH] dist={dist_str} raw_center={raw_center:.1f} "
+                  f"close_ratio={close_ratio:.2f} zone={zone} dir={direction} "
                   f"conf={confidence:.1f}")
 
         return ObstacleResult(
@@ -484,6 +514,7 @@ class DepthEstimator:
             confidence=confidence,
             ttc=self._ttc,
             approach_speed=self._approach_speed,
+            close_ratio=close_ratio,
         )
 
     # =========================================================================
@@ -528,7 +559,7 @@ class DepthEstimator:
             # Obtener distancia más cercana en esta zona (percentil 90 para filtrar outliers)
             p90 = float(np.percentile(zone, 90))
             distance = self.raw_to_meters(p90)
-            free = distance > 0.3  # distancia mínima libre (OBSTACLE_FREE_DISTANCE)
+            free = distance > self._free_distance  # distancia mínima libre
 
             results.append({
                 "direction": direction,

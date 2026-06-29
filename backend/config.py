@@ -136,6 +136,14 @@ DEPTH_ZONE_DANGER = float(os.getenv("DEPTH_ZONE_DANGER", "0.4"))      # frenar i
 DEPTH_ZONE_CAUTION = float(os.getenv("DEPTH_ZONE_CAUTION", "0.8"))    # reducir velocidad
 DEPTH_ZONE_PRE_CAUTION = float(os.getenv("DEPTH_ZONE_PRE_CAUTION", "1.2"))  # monitorear
 
+# Deteccion por close_ratio: porcentaje de pixeles "cerca" en el ROI central
+# Funciona cuando pared/mueble grande cubre la pantalla (valores raw altos uniformes)
+# Umbral raw: pixeles con valor > este umbral se consideran "cerca"
+# Calibrado: 0.3m=473, 0.5m=574, 0.8m=373 → umbral 450 solo triggered < 0.4m
+DEPTH_CLOSE_RAW_THRESHOLD = float(os.getenv("DEPTH_CLOSE_RAW_THRESHOLD", "450"))
+# Ratio minimo: si >70% del ROI central esta "cerca" → danger (pared/mueble grande)
+DEPTH_CLOSE_RATIO_THRESHOLD = float(os.getenv("DEPTH_CLOSE_RATIO_THRESHOLD", "0.7"))
+
 # Obstaculos
 OBSTACLE_STOP_THRESHOLD = float(os.getenv("OBSTACLE_STOP_THRESHOLD", "0.8"))  # metros
 OBSTACLE_TURN_TIME = float(os.getenv("OBSTACLE_TURN_TIME", "1.0"))  # segundos para girar
@@ -153,7 +161,7 @@ OBSTACLE_COLLISION_BACKUP_TIME = float(os.getenv("OBSTACLE_COLLISION_BACKUP_TIME
 # FREE_DISTANCE: distancia mínima para considerar un camino "libre"
 OBSTACLE_SCAN_180_TIME = float(os.getenv("OBSTACLE_SCAN_180_TIME", "2.0"))  # segundos para escanear 180°
 OBSTACLE_SCAN_360_TIME = float(os.getenv("OBSTACLE_SCAN_360_TIME", "4.0"))  # segundos para escanear 360°
-OBSTACLE_FREE_DISTANCE = float(os.getenv("OBSTACLE_FREE_DISTANCE", "0.3"))  # metros — distancia mínima libre para avanzar
+OBSTACLE_FREE_DISTANCE = float(os.getenv("OBSTACLE_FREE_DISTANCE", "0.7"))  # metros — distancia mínima para considerar un camino "libre" (subido de 0.3 a 0.7 para evitar que 0.7m de la cama se considere "libre")
 
 # Slowdown: reducir velocidad al acercarse
 OBSTACLE_SLOWDOWN_DISTANCE = float(os.getenv("OBSTACLE_SLOWDOWN_DISTANCE", "1.5"))  # metros — reducir velocidad
