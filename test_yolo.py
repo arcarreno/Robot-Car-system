@@ -7,8 +7,6 @@ Uso:
   python test_yolo.py --folder yolo_dataset/images/val   # Carpeta custom
   python test_yolo.py --conf 0.5               # Umbral de confianza custom
 
-Si no se pasa --image ni --folder, prueba con yolo_dataset/images/val
-(antes era "Flow/" que no existe).
 """
 
 import cv2
